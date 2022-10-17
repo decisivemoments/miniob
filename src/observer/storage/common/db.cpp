@@ -62,7 +62,7 @@ RC Db::init(const char *name, const char *dbpath)
 
 RC Db::drop_table(const char *table_name)
 {
-  RC rc = RC::SUCCESS;
+  RC rc;
   Table *table = find_table(table_name);
   if (table == nullptr) {
     return RC::SCHEMA_TABLE_NOT_EXIST;

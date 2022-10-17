@@ -332,7 +332,7 @@ void RecordFileHandler::close()
 
 void RecordFileHandler::destory() {
   if (disk_buffer_pool_ != nullptr) {
-    delete disk_buffer_pool_;
+    //delete disk_buffer_pool_;
     disk_buffer_pool_ = nullptr;
   }
 }

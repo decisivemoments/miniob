@@ -53,10 +53,18 @@ Table::~Table()
 
 RC Table::drop(const char *path, const char *name, const char *base_dir) {
 
+  if (nullptr == name || common::is_blank(name)) {
+    LOG_WARN("Name cannot be empty");
+    return RC::INVALID_ARGUMENT;
+  }
+  LOG_INFO("Begin to DROP table %s:%s", base_dir, name);
+
   RC rc = RC::SUCCESS;
   // destory indexes first
-  for (Index *index : indexes_) {
-    index ->drop();
+  std::string index_file;
+  for(auto iter=indexes_.begin();iter!=indexes_.end();++iter){
+    index_file=index_data_file(base_dir_.c_str(), name, (*iter)->index_meta().name());
+    remove(index_file.c_str());
   }
 
   // destory record handler
@@ -947,4 +955,8 @@ RC Table::sync()
   }
   LOG_INFO("Sync table over. table=%s", name());
   return rc;
+}
+std::string Table::index_data_file(const char *base_dir, const char *table_name, const char *index_name)
+{
+  return std::string(base_dir) + "/" + table_name + "-" + index_name + TABLE_INDEX_SUFFIX;
 }

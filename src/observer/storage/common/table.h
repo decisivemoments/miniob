@@ -125,6 +125,7 @@ private:
   DiskBufferPool *data_buffer_pool_ = nullptr;   /// 数据文件关联的buffer pool
   RecordFileHandler *record_handler_ = nullptr;  /// 记录操作
   std::vector<Index *> indexes_;
+  std::string index_data_file(const char *str, const char *name, const char *name1);
 };
 
 #endif  // __OBSERVER_STORAGE_COMMON_TABLE_H__
