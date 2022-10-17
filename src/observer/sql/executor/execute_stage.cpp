@@ -137,7 +137,11 @@ void ExecuteStage::handle_request(common::StageEvent *event)
   if (stmt != nullptr) {
     switch (stmt->type()) {
     case StmtType::SELECT: {
-      do_select(sql_event);
+      RC rc = do_select(sql_event);
+      if (rc != RC::SUCCESS) {
+        const char *response = "FAILURE\n";
+        session_event ->set_response(response);
+      }
     } break;
     case StmtType::INSERT: {
       do_insert(sql_event);
