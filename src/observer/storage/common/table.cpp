@@ -51,6 +51,29 @@ Table::~Table()
   LOG_INFO("Table has been closed: %s", name());
 }
 
+RC Table::drop(const char *path, const char *name, const char *base_dir) {
+
+  RC rc = RC::SUCCESS;
+  // destory indexes first
+  for (Index *index : indexes_) {
+    index ->drop();
+  }
+
+  // destory record handler
+  record_handler_ ->destory();
+  delete record_handler_;
+  record_handler_ = nullptr;
+
+  // destory buffer pool and remove data file
+  std::string data_file = table_data_file(base_dir, name);
+  BufferPoolManager &bpm = BufferPoolManager::instance();
+  rc = bpm.remove_file(data_file.c_str());
+
+  // remove meta file
+  int remove_ret = ::remove(path);
+  return rc;
+}
+
 RC Table::create(
     const char *path, const char *name, const char *base_dir, int attribute_count, const AttrInfo attributes[], CLogManager *clog_manager)
 {
